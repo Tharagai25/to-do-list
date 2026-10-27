@@ -1,23 +1,80 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import TodoList from './components/todolist';
+import AddTodo from './components/addtodo';
+import { useState } from 'react';
 
 function App() {
+
+  const [todos, setTodos] = useState([
+    {
+      id: 1,
+      task: "Learn React",
+      completed: false
+    },
+    {
+      id: 2,
+      task: "Practice JavaScript",
+      completed: true
+    }
+  ]);
+
+  const addTodo = (newTodo) => {
+    setTodos([...todos, newTodo]);
+  };
+
+  const deleteTodo = (id) => {
+    const updatedTodos = todos.filter(
+      todo => todo.id !== id
+    );
+
+    setTodos(updatedTodos);
+  };
+
+  const toggleTodo = (id) => {
+
+    const updatedTodos = todos.map(todo =>
+      todo.id === id
+        ? {
+            ...todo,
+            completed: !todo.completed
+          }
+        : todo
+    );
+
+    setTodos(updatedTodos);
+  };
+
   return (
+
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <BrowserRouter>
+
+        <Routes>
+
+          <Route
+            path="/"
+            element={
+              <TodoList
+                todos={todos}
+                deleteTodo={deleteTodo}
+                toggleTodo={toggleTodo}
+              />
+            }
+          />
+
+          <Route
+            path="/addtodo"
+            element={
+              <AddTodo addTodo={addTodo} />
+            }
+          />
+
+        </Routes>
+
+      </BrowserRouter>
+
     </div>
   );
 }
